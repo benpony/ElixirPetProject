@@ -40,7 +40,9 @@ defmodule ElixirJsonRestfulApi.MixProject do
       # server
       {:plug_cowboy, "~> 2.2"},
       # json encode/decode
-      {:poison, "~> 4.0.1"}
+      {:poison, "~> 4.0.1"},
+      {:mongodb_driver, "~> 0.6"},
+      {:poolboy, "~> 1.5"}
     ]
   end
 

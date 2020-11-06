@@ -6,6 +6,18 @@ defmodule ElixirJsonRestfulApi.Application do
   use Application
 
   def start(_type, _args) do
+    import Supervisor.Spec
+
+    # Starts an pooled connection
+    # Mongo.start_link(
+    #   url:
+    #     Application.get_env(
+    #       :elixir_json_restful_api,
+    #       :db
+    #     )[:conn_str],
+    #   pool_size: 3
+    # )
+
     children = [
       # Starts a worker by calling: ElixirJsonRestfulApi.Worker.start_link(arg)
       # {ElixirJsonRestfulApi.Worker, arg}
@@ -19,11 +31,29 @@ defmodule ElixirJsonRestfulApi.Application do
             :elixir_json_restful_api,
             :endPoint
           )[:port]
-      )
+      ),
+      worker(Mongo, [
+        [
+          url:
+            Application.get_env(
+              :elixir_json_restful_api,
+              :db
+            )[:conn_str],
+          name: :mongo,
+          database:
+            Application.get_env(
+              :elixir_json_restful_api,
+              :db
+            )[:database],
+          pool_size:
+            Application.get_env(
+              :elixir_json_restful_api,
+              :db
+            )[:pool_size]
+        ]
+      ])
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [
       strategy: :one_for_one,
       name: ElixirJsonRestfulApi.Supervisor

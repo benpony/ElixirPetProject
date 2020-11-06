@@ -42,6 +42,10 @@ defmodule ElixirJsonRestfulApi.UserEndpoint do
   # responsible for dispatching responses
   plug(:dispatch)
 
+  alias ElixirJsonRestfullApi.UserWriter
+  alias ElixirJsonRestfullApi.UserReader
+  alias ElixirJsonRestfullApi.ServiceUtils
+
   # A simple route to test that the server is up
   # Note, all routes must return a connection as per the Plug spec.
   # Get all users
@@ -49,6 +53,25 @@ defmodule ElixirJsonRestfulApi.UserEndpoint do
     conn
     |> put_resp_content_type("application/json")
     |> send_resp(200, Poison.encode!(%{response: "This a test message !"}))
+  end
+
+  get "/dbtest" do
+    UserWriter.add_user(%{
+      "username" => "user-#{:rand.uniform(100)}",
+      "password" => "secret-#{:rand.uniform(100)}",
+      "firstName" => "test-#{:rand.uniform(100)}",
+      "lastName" => "test-#{:rand.uniform(100)}",
+      "email" => "text@#{:rand.uniform(100)}.com"
+    })
+
+    # Gets an enumerable cursor for the results
+    users = ServiceUtils.endpoint_success(
+      UserReader.find_all_users()
+    )
+
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(200,users)
   end
 
   # A catchall route, 'match' will match no matter the request method,

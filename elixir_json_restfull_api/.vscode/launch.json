@@ -6,9 +6,19 @@
     "configurations": [
         {
             "type": "mix_task",
+            "request": "launch",
+            "name": "mix task",
+            "projectDir": "${workspaceRoot}",
+            "startApps": true,
+            "env": {
+                "ELIXIRDEMO_MONGO_URI": "mongodb+srv://admin:8EwHY0ORZtX3bwUB@cluster0.rathg.mongodb.net/elixirdemo",
+            },
+        },
+        {
+            "type": "mix_task",
             "name": "mix (Default task)",
             "request": "launch",
-            "projectDir": "${workspaceRoot}"
+            "projectDir": "${workspaceRoot}",
         },
         {
             "type": "mix_task",
